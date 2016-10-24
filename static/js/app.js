@@ -42,7 +42,7 @@ var itubApp = angular.module('itubApp', [])
 
         $scope.onchangeHeater = function() {
             var url = "/heater_";
-            url += ($scope.heater == 0) ? "off" : "on";
+            url += ($scope.heater == -1) ? "off" : (($scope.heater == 0) ? "pool" : "spa");
             $http.get(url).then(function(response) {
                 console.log("Heat control changed");
             }).catch(function (err) {

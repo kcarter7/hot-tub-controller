@@ -1,7 +1,7 @@
 class Status(object):
 
     def __init__(self):
-        self.heater = 0
+        self.heater = -1
         self.pump1 = 0
         self.pump2 = 0
         self.tempIn = 25

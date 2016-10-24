@@ -94,6 +94,7 @@ voltage_table = [
 
 def adc_value_to_F(adc_value):
     value = adc_value / 1024.0
+    value = 1.0 - value   # IF WIRED BACKWARD FROM ORIGINAL
     for i in range(1, len(voltage_table) - 1):
         if value <= voltage_table[i - 1][0] and value > voltage_table[i][0]:
             # interpolate between the two values

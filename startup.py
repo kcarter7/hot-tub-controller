@@ -95,14 +95,20 @@ class HotTubServer(object):
             self.adclock.release()
 
     @cherrypy.expose
-    def heater_on(self):
+    def heater_pool(self):
+        self.status.heater = 0 
+        self.controller.heater_pool()
+        return json.dumps(self.status.to_jsonable())
+
+    @cherrypy.expose
+    def heater_spa(self):
         self.status.heater = 1
-        self.controller.heater_on()
+        self.controller.heater_spa()
         return json.dumps(self.status.to_jsonable())
 
     @cherrypy.expose
     def heater_off(self):
-        self.status.heater = 0
+        self.status.heater = -1
         self.controller.heater_off()
         return json.dumps(self.status.to_jsonable())
 
