@@ -8,11 +8,17 @@ var itubApp = angular.module('itubApp', [])
         $scope.two_speed_pump = false;
         $scope.second_pump = false;
 
-        var refresh = function() {
-            $http.get('/current').then(function(response) {
+	var refreshLabels = function() {
+	   $http.get('/getstatus').then(function(response) {
                 $scope.loaded = true;
                 var status = response.data;
-                $scope.heater = status.heater;
+               	$scope.tubOnOff = status.tubOnOff; 
+		if ($scope.tubOnOff == 0) {
+			$scope.tubOnOffLabel = "Turn On";
+		} else {
+	   		$scope.tubOnOffLabel = "Turn Off";
+	   	}
+		$scope.heater = status.heater;
                 $scope.pump1 = status.pump1;
                 $scope.pump2 = status.pump2;
                 $scope.tempAir = status.tempAir;
@@ -21,11 +27,14 @@ var itubApp = angular.module('itubApp', [])
                 $scope.tempSet = status.tempSet;
                 $scope.freeze_status = status.freeze_status;
                 $scope.filter_status = status.filter_status;
-                $timeout(refresh, 5000);
             }).catch(function (err) {
                 // alert("Error retrieving status. " + err.statusText);
-                $timeout(refresh, 5000);
-            });
+           });
+	};	
+	
+	var refresh = function() {
+	   refreshLabels();
+           $timeout(refresh, 5000);
             $http.get('/getconfig').then(function(response) {
                 var config = response.data;
                 $scope.two_speed_pump = config.two_speed_pump;
@@ -40,7 +49,24 @@ var itubApp = angular.module('itubApp', [])
 
         refresh();
 
-        $scope.onchangeHeater = function() {
+	$scope.onchangeTubOnOff = function() {
+            var url = "/tub_";
+            var urlSuffix = ($scope.tubOnOff == 1) ? "off" : "on";
+    	    url += urlSuffix; 
+           $http.get(url).then(function(response) {
+          	if ($scope.tubOnOff == 1) {  	
+	    	   $scope.tubOnOff = 0;
+		} else {
+		   $scope.tubOnOff = 1;
+		}		
+		refreshLabels();	
+		console.log("Tub turned " + urlSuffix);
+            }).catch(function (err) {
+                alert("Error turning tub on/off");
+            });
+        };
+
+	$scope.onchangeHeater = function() {
             var url = "/heater_";
             url += ($scope.heater == -1) ? "off" : (($scope.heater == 0) ? "pool" : "spa");
             $http.get(url).then(function(response) {

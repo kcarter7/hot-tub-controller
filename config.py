@@ -10,7 +10,7 @@ class Config(object):
 
     def read(self):
         try:
-            with open('/home/pi/config.json') as fd:
+            with open('/home/pi/hot-tub-controller/config.json') as fd:
                 config = json.loads(fd.read())
             self.two_speed_pump = config['two_speed_pump']
             self.second_pump = config['second_pump']

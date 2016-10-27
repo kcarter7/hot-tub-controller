@@ -17,7 +17,7 @@ import subprocess
 
 
 def validate_password(realm, user, password):
-    with open('/home/pi/users.json') as fd:
+    with open('/home/pi/hot-tub-controller/users.json') as fd:
         users = json.loads(fd.read())
     return unicode(user) in users and users[unicode(user)] == unicode(password)
 
@@ -33,7 +33,7 @@ class HotTubServer(object):
         self.filter_status = 0
         self.last_alert = datetime.datetime.utcfromtimestamp(0)
         self.adclock = threading.Lock()
-        Timer(30.0, self.filter_timer).start()
+        Timer(5.0, self.filter_timer).start()
 
     @cherrypy.expose
     def index(self):
@@ -43,7 +43,7 @@ class HotTubServer(object):
     def filter_timer(self):
         self.current()
         self.config.read()
-        with open('/home/pi/filter.json') as fd:
+        with open('/home/pi/hot-tub-controller/filter.json') as fd:
             filter_settings = json.loads(fd.read())
         now = datetime.datetime.now()
         seconds = (now.hour * 3600) + (now.minute * 60) + now.second
@@ -61,7 +61,7 @@ class HotTubServer(object):
             (datetime.datetime.now() - self.last_alert).total_seconds() > 3600:
             print "WARNING: WATER TEMPERATURE ALERT. POSSIBLE POWER OUTAGE."
             try:
-                with open('/home/pi/alerts.json') as fd:
+                with open('/home/pi/hot-tub-controller/alerts.json') as fd:
                     alerts = json.loads(fd.read())
                 if alerts['number']:
                     out = subprocess.check_output(["curl",
@@ -74,13 +74,25 @@ class HotTubServer(object):
                 print 'SMS response: {}'.format(out)
                 self.last_alert = datetime.datetime.now()
             except Exception as err: print "Error sending SMS alert: {}".format(err)
-        Timer(30.0, self.filter_timer).start()
+        # check for automatic tub turn off 
+        if self.status.pump1 != 0 and (self.status.tempOut - self.status.tempIn) < 1.0 and \
+            (self.status.heater == 0 and self.status.tempIn > 101.0 or self.status.heater == 1 and self.status.tempIn > 104.0):
+            self.pump1_off()
+            self.heater_off()
+            self.tub_off() 
+        Timer(5.0, self.filter_timer).start()
 
     @cherrypy.expose
     def getconfig(self):
         return json.dumps(self.config.to_jsonable(), indent=4)
 
     @cherrypy.expose
+    def getstatus(self):
+        status = self.status.to_jsonable()
+        status['freeze_status'] = self.freeze_status
+        status['filter_status'] = self.filter_status
+        return json.dumps(status, indent=4) 
+
     def current(self):
         try:
             self.adclock.acquire(True)
@@ -93,6 +105,24 @@ class HotTubServer(object):
             return json.dumps(status, indent=4)
         finally:
             self.adclock.release()
+
+    @cherrypy.expose
+    def tub_on(self):
+	self.status.tubOnOff = 1 
+	self.status.heater = 1
+        self.controller.heater_spa()
+        self.status.pump1 = 2
+        self.controller.pump1_high()
+ 	return json.dumps(self.status.to_jsonable())
+    
+    @cherrypy.expose
+    def tub_off(self):
+	self.status.tubOnOff = 0 
+	self.status.heater = -1
+        self.controller.heater_off()
+        self.status.pump1 = 0
+	self.controller.pump1_off()
+ 	return json.dumps(self.status.to_jsonable())
 
     @cherrypy.expose
     def heater_pool(self):

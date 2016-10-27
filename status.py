@@ -1,7 +1,8 @@
 class Status(object):
 
     def __init__(self):
-        self.heater = -1
+       	self.tubOnOff = 0 
+	self.heater = -1
         self.pump1 = 0
         self.pump2 = 0
         self.tempIn = 25
@@ -10,7 +11,8 @@ class Status(object):
 
     def to_jsonable(self):
         return {
-            'heater': self.heater,
+            'tubOnOff': self.tubOnOff, 
+	    'heater': self.heater,
             'pump1': self.pump1,
             'pump2': self.pump2,
             'tempIn': self.tempIn,
