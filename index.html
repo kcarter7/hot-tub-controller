@@ -8,16 +8,24 @@
 
 </head>
 <body ng-controller="itubController">
-<span class="title">kTub Hot Tub Controller</span><br/>
+<span class="title">Hot Tub Controller</span> 
+<label class="config">&nbsp &nbsp Show Config?  
+   <input class="config" type="checkbox" ng-model="showConfig"></input> 
+</label><br/>
+
 <table ng-show="loaded">
 
 <tr><td class="Label">Tub On/Off</td><td><button ng-click="onchangeTubOnOff()">{{tubOnOffLabel}}</button></td></tr>
-<tr><td class="label">Heat</td><td><select ng-change="onchangeHeater()" ng-model="heater" ng-options="option.value as option.label for option in [{'label': 'Papa Bear', 'value': 1}, {'label': 'Mama Bear', 'value': 0}, {'label': 'Off', 'value': -1}]"></select></td></tr>
-<tr><td class="label">Main pump</td><td><select ng-change="onchangePump1()" ng-model="pump1" ng-options="option.value as option.label for option in heater_options"></select></td></tr>
+<tr><td class="label">Heat</td><td><select ng-change="onchangeHeater()" ng-model="heater" ng-options="option.value as option.label for option in heater_options"></select></td></tr>
+<tr><td class="label">Main pump</td><td><select ng-change="onchangePump1()" ng-model="pump1" ng-options="option.value as option.label for option in main_pump_options"></select></td></tr>
 <tr ng-show="second_pump"><td class="label">Second Pump</td><td><select ng-change="onchangePump2()" ng-model="pump2" ng-options="option.value as option.label for option in [{'label': 'Off', 'value': 0}, {'label': 'On', 'value': 1}]"></select></td></tr>
 <tr><td class="label">Air temp</td><td>{{ tempAir | number: 1 }}</td></tr>
 <tr><td class="label">Water temp into heater</td><td>{{ tempIn | number: 1 }}</td></tr>
 <tr><td class="label">Water temp out of heater</td><td>{{ tempOut | number: 1 }}</td></tr>
+<tr ng-show="showConfig"><td class="label">Pool Mode Label</td><td><input ng-change="onchangePoolModeLabel()" ng-model="poolModeLabel"></input></td></tr>
+<tr ng-show="showConfig"><td class="label">Pool Mode Temp</td><td><input ng-change="onchangePoolModeTemp()" ng-model="poolModeTemp"></input></td></tr>
+<tr ng-show="showConfig"><td class="label">Spa Mode Label</td><td><input ng-change="onchangeSpaModeLabel()" ng-model="spaModeLabel"></input></td></tr>
+<tr ng-show="showConfig"><td class="label">Spa Mode Temp</td><td><input ng-change="onchangeSpaModeTemp()" ng-model="spaModeTemp"></input></td></tr>
 </table>
 <div class="label" ng-show="loaded && freeze_status !== 0">Freeze control: RUNNING</div>
 <div class="label" ng-show="loaded && filter_status !== 0">Filter is on</td></div>

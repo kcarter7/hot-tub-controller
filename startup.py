@@ -76,7 +76,7 @@ class HotTubServer(object):
             except Exception as err: print "Error sending SMS alert: {}".format(err)
         # check for automatic tub turn off 
         if self.status.pump1 != 0 and (self.status.tempOut - self.status.tempIn) < 1.0 and \
-            (self.status.heater == 0 and self.status.tempIn > 101.0 or self.status.heater == 1 and self.status.tempIn > 104.0):
+            (self.status.heater == 0 and self.status.tempIn > self.config.poolModeTemp or self.status.heater == 1 and self.status.tempIn > self.config.spaModeTemp):
             self.pump1_off()
             self.heater_off()
             self.tub_off() 
@@ -86,6 +86,11 @@ class HotTubServer(object):
     def getconfig(self):
         return json.dumps(self.config.to_jsonable(), indent=4)
 
+    @cherrypy.expose
+    def setconfig(self, jsontext):
+        self.config.write_config(jsontext)
+        return
+ 
     @cherrypy.expose
     def getstatus(self):
         status = self.status.to_jsonable()
@@ -108,21 +113,21 @@ class HotTubServer(object):
 
     @cherrypy.expose
     def tub_on(self):
-	self.status.tubOnOff = 1 
-	self.status.heater = 1
+        self.status.tubOnOff = 1 
+        self.status.heater = 1
         self.controller.heater_spa()
         self.status.pump1 = 2
         self.controller.pump1_high()
- 	return json.dumps(self.status.to_jsonable())
+        return json.dumps(self.status.to_jsonable())
     
     @cherrypy.expose
     def tub_off(self):
-	self.status.tubOnOff = 0 
-	self.status.heater = -1
+        self.status.tubOnOff = 0 
+        self.status.heater = -1
         self.controller.heater_off()
         self.status.pump1 = 0
-	self.controller.pump1_off()
- 	return json.dumps(self.status.to_jsonable())
+        self.controller.pump1_off()
+        return json.dumps(self.status.to_jsonable())
 
     @cherrypy.expose
     def heater_pool(self):

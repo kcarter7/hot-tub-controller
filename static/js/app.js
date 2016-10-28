@@ -10,44 +10,65 @@ var itubApp = angular.module('itubApp', [])
 
 	var refreshLabels = function() {
 	   $http.get('/getstatus').then(function(response) {
-                $scope.loaded = true;
-                var status = response.data;
-               	$scope.tubOnOff = status.tubOnOff; 
+		$scope.loaded = true;
+		var status = response.data;
+		$scope.tubOnOff = status.tubOnOff; 
 		if ($scope.tubOnOff == 0) {
 			$scope.tubOnOffLabel = "Turn On";
 		} else {
-	   		$scope.tubOnOffLabel = "Turn Off";
-	   	}
+			$scope.tubOnOffLabel = "Turn Off";
+		}
 		$scope.heater = status.heater;
-                $scope.pump1 = status.pump1;
-                $scope.pump2 = status.pump2;
-                $scope.tempAir = status.tempAir;
-                $scope.tempIn = status.tempIn;
-                $scope.tempOut = status.tempOut;
-                $scope.tempSet = status.tempSet;
-                $scope.freeze_status = status.freeze_status;
-                $scope.filter_status = status.filter_status;
-            }).catch(function (err) {
-                // alert("Error retrieving status. " + err.statusText);
-           });
+		$scope.pump1 = status.pump1;
+		$scope.pump2 = status.pump2;
+		$scope.tempAir = status.tempAir;
+		$scope.tempIn = status.tempIn;
+		$scope.tempOut = status.tempOut;
+		$scope.tempSet = status.tempSet;
+		$scope.freeze_status = status.freeze_status;
+		$scope.filter_status = status.filter_status;
+	    }).catch(function (err) {
+		// alert("Error retrieving status. " + err.statusText);
+	   });
+	   $http.get('/getconfig').then(function(response) {
+		var config = response.data;
+		$scope.two_speed_pump = config.two_speed_pump;
+		$scope.second_pump = config.second_pump;
+		$scope.poolModeLabel = config.poolModeLabel;
+		$scope.poolModeTemp = config.poolModeTemp;
+		$scope.spaModeLabel = config.spaModeLabel;
+		$scope.spaModeTemp = config.spaModeTemp;
+	   }).finally(function () {
+		$scope.heater_options = 
+		    [{'label': 'Off', 'value': -1}, {'label': $scope.poolModeLabel, 'value': 0}, {'label': $scope.spaModeLabel, 'value': 1}]
+		$scope.main_pump_options = $scope.two_speed_pump ?
+		    [{'label': 'Off', 'value': 0}, {'label': 'Low', 'value': 1}, {'label': 'High', 'value': 2}] :
+		    [{'label': 'Off', 'value': 0}, {'label': 'On', 'value': 1}]
+	   })
 	};	
 	
 	var refresh = function() {
 	   refreshLabels();
            $timeout(refresh, 5000);
-            $http.get('/getconfig').then(function(response) {
-                var config = response.data;
-                $scope.two_speed_pump = config.two_speed_pump;
-                $scope.second_pump = config.second_pump;
-            }).finally(function () {
-                $scope.heater_options = $scope.two_speed_pump ?
-                    [{'label': 'Off', 'value': 0}, {'label': 'Low', 'value': 1}, {'label': 'High', 'value': 2}] :
-                    [{'label': 'Off', 'value': 0}, {'label': 'On', 'value': 1}]
-
-            })
         };
 
         refresh();
+
+	$scope.onchangePoolModeLabel = function () {
+	   alert("on change");	
+	   $http.get('/getconfig').then(function(response) {
+		var config = response.data;
+		config.poolModeLabel = $scope.poolModeLabel;
+	    }).catch(function (err) {
+		 alert("Error retrieving config values");
+	   });
+	   alert("post");
+	   $http.post('/setconfig', config).then(function(response) {
+		var postresponse = response.data;
+	    }).catch(function (err) {
+		alert("Error posting config values");
+	   });
+	}	
 
 	$scope.onchangeTubOnOff = function() {
             var url = "/tub_";
