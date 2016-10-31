@@ -1,15 +1,32 @@
 
 .title {
    font-weight: bold;
-   font-size: large;
+   font-size: 5em;
 }
 
 table {
+    width: 80%;
+    height: 50%;
     background-color: #b3d9ff;
     border-collapse: collapse;
 }
 
 table, td {
+    font-size: xx-large;
     border: 1px solid;
 }
+
+button {
+    background-color: white;
+    border: 1px solid #555555;
+    padding: 15px 40px; 
+    font-size: xx-large;
+    border-radius: 12px; 
+}
+
+select {
+    background-color: white;
+    border: 1px solid #555555;
+    font-size: xx-large;
+    border-radius: 12px;
 
