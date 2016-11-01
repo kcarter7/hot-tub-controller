@@ -6,11 +6,11 @@
 
 .config {
    font-weight: normal;
-   font-size: small;
+   font-size: large;
 }
 
 table {
-    width: 80%;
+    width: 85%;
     height: 50%;
     background-color: #b3d9ff;
     border-collapse: collapse;
@@ -21,17 +21,18 @@ table, td {
     border: 1px solid;
 }
 
-button {
-    background-color: white;
-    border: 1px solid #555555;
-    padding: 15px 40px; 
-    font-size: xx-large;
-    border-radius: 12px; 
-}
-
-select {
+select, button {
     background-color: white;
     border: 1px solid #555555;
     font-size: xx-large;
     border-radius: 12px;
+}
+
+button {
+    padding: 15px 40px; 
+}
+
+input {
+    font-size: xx-large;
+}
 

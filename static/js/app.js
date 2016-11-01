@@ -55,17 +55,15 @@ var itubApp = angular.module('itubApp', [])
         refresh();
 
 	$scope.onchangePoolModeLabel = function () {
-	   alert("on change");	
+	   var config;
 	   $http.get('/getconfig').then(function(response) {
-		var config = response.data;
+		config = response.data;
 		config.poolModeLabel = $scope.poolModeLabel;
-	    }).catch(function (err) {
+	   }).catch(function (err) {
 		 alert("Error retrieving config values");
 	   });
-	   alert("post");
 	   $http.post('/setconfig', config).then(function(response) {
-		var postresponse = response.data;
-	    }).catch(function (err) {
+	   }).catch(function (err) {
 		alert("Error posting config values");
 	   });
 	}	

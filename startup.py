@@ -89,7 +89,6 @@ class HotTubServer(object):
     @cherrypy.expose
     def setconfig(self, jsontext):
         self.config.write_config(jsontext)
-        return
  
     @cherrypy.expose
     def getstatus(self):
