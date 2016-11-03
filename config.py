@@ -25,10 +25,10 @@ class Config(object):
         except Exception as err:
             print err
 
-    def write_config(self, data):
+    def write_config(self, jsontext):
         try:
             with open('/home/pi/hot-tub-controller/config.json','w') as fo:
-                json.dump(json.loads(data),fo,indent=4)
+                json.dump(jsontext,fo,indent=4)
         except Exception as err:
             print err
 

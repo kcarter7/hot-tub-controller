@@ -7,6 +7,15 @@ var itubApp = angular.module('itubApp', [])
         $scope.loaded = false;
         $scope.two_speed_pump = false;
         $scope.second_pump = false;
+	$scope.showConfig = false;
+
+	var refreshOptions = function() {
+		$scope.heater_options = 
+		    [{'label': 'Off', 'value': -1}, {'label': $scope.poolModeLabel, 'value': 0}, {'label': $scope.spaModeLabel, 'value': 1}]
+		$scope.main_pump_options = $scope.two_speed_pump ?
+		    [{'label': 'Off', 'value': 0}, {'label': 'Low', 'value': 1}, {'label': 'High', 'value': 2}] :
+		    [{'label': 'Off', 'value': 0}, {'label': 'On', 'value': 1}]
+	};
 
 	var refreshLabels = function() {
 	   $http.get('/getstatus').then(function(response) {
@@ -28,28 +37,27 @@ var itubApp = angular.module('itubApp', [])
 		$scope.freeze_status = status.freeze_status;
 		$scope.filter_status = status.filter_status;
 	    }).catch(function (err) {
-		// alert("Error retrieving status. " + err.statusText);
+		alert("Error retrieving status. " + err.statusText);
 	   });
 	   $http.get('/getconfig').then(function(response) {
-		var config = response.data;
-		$scope.two_speed_pump = config.two_speed_pump;
-		$scope.second_pump = config.second_pump;
-		$scope.poolModeLabel = config.poolModeLabel;
-		$scope.poolModeTemp = config.poolModeTemp;
-		$scope.spaModeLabel = config.spaModeLabel;
-		$scope.spaModeTemp = config.spaModeTemp;
+		if ($scope.showConfig == false || $scope.loaded == false) { 
+			var config = response.data;
+			$scope.two_speed_pump = config.two_speed_pump;
+			$scope.second_pump = config.second_pump;
+			$scope.poolModeLabel = config.poolModeLabel;
+			$scope.poolModeTemp = config.poolModeTemp;
+			$scope.spaModeLabel = config.spaModeLabel;
+			$scope.spaModeTemp = config.spaModeTemp;
+		}
 	   }).finally(function () {
-		$scope.heater_options = 
-		    [{'label': 'Off', 'value': -1}, {'label': $scope.poolModeLabel, 'value': 0}, {'label': $scope.spaModeLabel, 'value': 1}]
-		$scope.main_pump_options = $scope.two_speed_pump ?
-		    [{'label': 'Off', 'value': 0}, {'label': 'Low', 'value': 1}, {'label': 'High', 'value': 2}] :
-		    [{'label': 'Off', 'value': 0}, {'label': 'On', 'value': 1}]
-	   })
+ 		refreshOptions();
+		$scope.loaded = true;
+	   });
 	};	
 	
 	var refresh = function() {
 	   refreshLabels();
-           $timeout(refresh, 5000);
+	   $timeout(refresh, 5000);
         };
 
         refresh();
@@ -59,13 +67,81 @@ var itubApp = angular.module('itubApp', [])
 	   $http.get('/getconfig').then(function(response) {
 		config = response.data;
 		config.poolModeLabel = $scope.poolModeLabel;
+		$http.post('/setconfig', config).then(function(response) { }).catch(function (err) {
+			alert("Error posting config values");
+	   	});
 	   }).catch(function (err) {
 		 alert("Error retrieving config values");
 	   });
-	   $http.post('/setconfig', config).then(function(response) {
+	   refreshOptions();
+	}	
+
+	$scope.onchangePoolModeTemp = function () {
+	   var config;
+	   $http.get('/getconfig').then(function(response) {
+		config = response.data;
+		config.poolModeTemp = $scope.poolModeTemp;
+		$http.post('/setconfig', config).then(function(response) { }).catch(function (err) {
+			alert("Error posting config values");
+	   	});
 	   }).catch(function (err) {
-		alert("Error posting config values");
+		 alert("Error retrieving config values");
 	   });
+	}	
+
+	$scope.onchangeSpaModeLabel = function () {
+	   var config;
+	   $http.get('/getconfig').then(function(response) {
+		config = response.data;
+		config.spaModeLabel = $scope.spaModeLabel;
+		$http.post('/setconfig', config).then(function(response) { }).catch(function (err) {
+			alert("Error posting config values");
+	   	});
+	   }).catch(function (err) {
+		 alert("Error retrieving config values");
+	   });
+	   refreshOptions();
+	}	
+
+	$scope.onchangeSpaModeTemp = function () {
+	   var config;
+	   $http.get('/getconfig').then(function(response) {
+		config = response.data;
+		config.spaModeTemp = $scope.spaModeTemp;
+		$http.post('/setconfig', config).then(function(response) { }).catch(function (err) {
+			alert("Error posting config values");
+	   	});
+	   }).catch(function (err) {
+		 alert("Error retrieving config values");
+	   });
+	}	
+
+	$scope.onchangeTwoSpeedPump = function () {
+	   var config;
+	   $http.get('/getconfig').then(function(response) {
+		config = response.data;
+		config.two_speed_pump = $scope.two_speed_pump;
+		$http.post('/setconfig', config).then(function(response) { }).catch(function (err) {
+			alert("Error posting config values");
+	   	});
+	   }).catch(function (err) {
+		 alert("Error retrieving config values");
+	   });
+	   refreshOptions();
+	}	
+
+	$scope.onchangeSecondPump = function () {
+	   var config;
+	   $http.get('/getconfig').then(function(response) {
+		config = response.data;
+		config.second_pump = $scope.second_pump;
+		$http.post('/setconfig', config).then(function(response) { }).catch(function (err) {
+			alert("Error posting config values");
+	   	});
+	   }).catch(function (err) {
+		 alert("Error retrieving config values");
+	   });
+	   refreshOptions();
 	}	
 
 	$scope.onchangeTubOnOff = function() {

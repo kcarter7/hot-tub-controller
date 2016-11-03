@@ -23,9 +23,11 @@
 <tr><td class="label">Water temp into heater</td><td>{{ tempIn | number: 1 }}</td></tr>
 <tr><td class="label">Water temp out of heater</td><td>{{ tempOut | number: 1 }}</td></tr>
 <tr ng-show="showConfig"><td class="label">Pool Mode Label</td><td><input ng-change="onchangePoolModeLabel()" ng-model="poolModeLabel"></input></td></tr>
-<tr ng-show="showConfig"><td class="label">Pool Mode Temp</td><td><input ng-change="onchangePoolModeTemp()" ng-model="poolModeTemp"></input></td></tr>
+<tr ng-show="showConfig"><td class="label">Pool Mode Temp</td><td><input type="number" ng-change="onchangePoolModeTemp()" ng-model="poolModeTemp"></input></td></tr>
 <tr ng-show="showConfig"><td class="label">Spa Mode Label</td><td><input ng-change="onchangeSpaModeLabel()" ng-model="spaModeLabel"></input></td></tr>
-<tr ng-show="showConfig"><td class="label">Spa Mode Temp</td><td><input ng-change="onchangeSpaModeTemp()" ng-model="spaModeTemp"></input></td></tr>
+<tr ng-show="showConfig"><td class="label">Spa Mode Temp</td><td><input type="number" ng-change="onchangeSpaModeTemp()" ng-model="spaModeTemp"></input></td></tr>
+<tr ng-show="showConfig"><td class="label">Two Speed Pump</td><td><input type="checkbox" ng-change="onchangeTwoSpeedPump()" ng-model="two_speed_pump"></input></td></tr>
+<tr ng-show="showConfig"><td class="label">Second Pump</td><td><input type="checkbox" ng-change="onchangeSecondPump()" ng-model="second_pump"></input></td></tr>
 </table>
 <div class="label" ng-show="loaded && freeze_status !== 0">Freeze control: RUNNING</div>
 <div class="label" ng-show="loaded && filter_status !== 0">Filter is on</td></div>

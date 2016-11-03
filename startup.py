@@ -87,7 +87,10 @@ class HotTubServer(object):
         return json.dumps(self.config.to_jsonable(), indent=4)
 
     @cherrypy.expose
-    def setconfig(self, jsontext):
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
+    def setconfig(self):
+        jsontext = cherrypy.request.json
         self.config.write_config(jsontext)
  
     @cherrypy.expose
