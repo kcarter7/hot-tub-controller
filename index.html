@@ -22,7 +22,7 @@
 <tr><td class="label">Air temp</td><td>{{ tempAir | number: 1 }}</td></tr>
 <tr><td class="label">Water temp into heater</td><td>{{ tempIn | number: 1 }}</td></tr>
 <tr><td class="label">Water temp out of heater</td><td>{{ tempOut | number: 1 }}</td></tr>
-<tr><td class="label">Time</td><td>{{ currentTime | date: 'mediumTime' }}</td></tr>
+<tr><td class="label">Time</td><td>{{ currentTime }}</td></tr>
 <tr ng-show="showConfig"><td class="label">Pool Mode Label</td><td><input ng-change="onchangePoolModeLabel()" ng-model="poolModeLabel"></input></td></tr>
 <tr ng-show="showConfig"><td class="label">Pool Mode Temp</td><td><input type="number" ng-change="onchangePoolModeTemp()" ng-model="poolModeTemp"></input></td></tr>
 <tr ng-show="showConfig"><td class="label">Spa Mode Label</td><td><input ng-change="onchangeSpaModeLabel()" ng-model="spaModeLabel"></input></td></tr>

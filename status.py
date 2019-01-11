@@ -10,7 +10,7 @@ class Status(object):
         self.tempIn = 25
         self.tempOut = 25
         self.tempAir = 25
-	self.currentTime = datetime.datetime.now()
+	self.currentTime = ""
 
     def to_jsonable(self):
         return {
@@ -21,5 +21,5 @@ class Status(object):
             'tempIn': self.tempIn,
             'tempOut': self.tempOut,
             'tempAir': self.tempAir,
-	    'currentTime': self.currentTime
+	    'currentTime': self.currentTime,
         }

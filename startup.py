@@ -4,6 +4,7 @@ import cherrypy
 from cherrypy.lib.static import serve_file
 
 import datetime
+from pytz import timezone
 import RPi.GPIO as GPIO
 import json
 from adc import ADCReader
@@ -106,7 +107,8 @@ class HotTubServer(object):
             self.status.tempAir = thermistor.adc_value_to_F(self.adc.readadc(7))
             self.status.tempIn = thermistor.adc_value_to_F(self.adc.readadc(3))
             self.status.tempOut = thermistor.adc_value_to_F(self.adc.readadc(5))
-	    self.status.currentTime = datetime.datetime.now()
+	    d_Local = datetime.datetime.now(timezone('America/Los_Angeles')) 
+	    self.status.currentTime = d_Local.strftime('%-I:%M:%S %p') 
             status = self.status.to_jsonable()
             status['freeze_status'] = self.freeze_status
             status['filter_status'] = self.filter_status

@@ -33,6 +33,7 @@ var itubApp = angular.module('itubApp', [])
 		$scope.tempAir = status.tempAir;
 		$scope.tempIn = status.tempIn;
 		$scope.tempOut = status.tempOut;
+		$scope.currentTime = status.currentTime;
 		$scope.tempSet = status.tempSet;
 		$scope.freeze_status = status.freeze_status;
 		$scope.filter_status = status.filter_status;
