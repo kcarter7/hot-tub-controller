@@ -106,6 +106,7 @@ class HotTubServer(object):
             self.status.tempAir = thermistor.adc_value_to_F(self.adc.readadc(7))
             self.status.tempIn = thermistor.adc_value_to_F(self.adc.readadc(3))
             self.status.tempOut = thermistor.adc_value_to_F(self.adc.readadc(5))
+	    self.status.currentTime = datetime.datetime.now()
             status = self.status.to_jsonable()
             status['freeze_status'] = self.freeze_status
             status['filter_status'] = self.filter_status
