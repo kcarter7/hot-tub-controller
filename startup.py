@@ -2,6 +2,10 @@
 
 import cherrypy
 from cherrypy.lib.static import serve_file
+#from cherrypy.process import servers
+#def fake_wait_for_occupied_port (host, port): return
+#servers.wait_for_occupied_port = fake_wait_for_occupied_port
+
 
 import datetime
 from pytz import timezone
@@ -107,8 +111,8 @@ class HotTubServer(object):
             self.status.tempAir = thermistor.adc_value_to_F(self.adc.readadc(7))
             self.status.tempIn = thermistor.adc_value_to_F(self.adc.readadc(3))
             self.status.tempOut = thermistor.adc_value_to_F(self.adc.readadc(5))
-	    d_Local = datetime.datetime.now(timezone('America/Los_Angeles')) 
-	    self.status.currentTime = d_Local.strftime('%-I:%M:%S %p') 
+            d_Local = datetime.datetime.now(timezone('America/Los_Angeles')) 
+            self.status.currentTime = d_Local.strftime('%-I:%M:%S %p') 
             status = self.status.to_jsonable()
             status['freeze_status'] = self.freeze_status
             status['filter_status'] = self.filter_status
