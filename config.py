@@ -10,6 +10,7 @@ class Config(object):
         self.poolModeTemp = 0
         self.spaModeLabel = ""
         self.spaModeTemp = 0 
+	self.freezeCtrlTemp = 0
         self.read()
 
     def read(self):
@@ -22,6 +23,7 @@ class Config(object):
             self.poolModeTemp = config['poolModeTemp']
             self.spaModeLabel = config['spaModeLabel']
             self.spaModeTemp = config['spaModeTemp']
+	    self.freezeCtrlTemp = config['freezeCtrlTemp']				
         except Exception as err:
             print err
 
@@ -38,4 +40,5 @@ class Config(object):
             'poolModeLabel': self.poolModeLabel,
             'poolModeTemp': self.poolModeTemp,
             'spaModeLabel': self.spaModeLabel,
-            'spaModeTemp': self.spaModeTemp}
+            'spaModeTemp': self.spaModeTemp,
+	    'freezeCtrlTemp': self.freezeCtrlTemp}

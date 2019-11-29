@@ -49,6 +49,7 @@ var itubApp = angular.module('itubApp', [])
 			$scope.poolModeTemp = config.poolModeTemp;
 			$scope.spaModeLabel = config.spaModeLabel;
 			$scope.spaModeTemp = config.spaModeTemp;
+			$scope.freezeCtrlTemp = config.freezeCtrlTemp;
 		}
 	   }).finally(function () {
  		refreshOptions();
@@ -109,6 +110,19 @@ var itubApp = angular.module('itubApp', [])
 	   $http.get('/getconfig').then(function(response) {
 		config = response.data;
 		config.spaModeTemp = $scope.spaModeTemp;
+		$http.post('/setconfig', config).then(function(response) { }).catch(function (err) {
+			alert("Error posting config values");
+	   	});
+	   }).catch(function (err) {
+		 alert("Error retrieving config values");
+	   });
+	}	
+
+	$scope.onchangeFreezeCtrlTemp = function () {
+	   var config;
+	   $http.get('/getconfig').then(function(response) {
+		config = response.data;
+		config.freezeCtrlTemp = $scope.freezeCtrlTemp;
 		$http.post('/setconfig', config).then(function(response) { }).catch(function (err) {
 			alert("Error posting config values");
 	   	});

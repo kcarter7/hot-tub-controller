@@ -55,30 +55,31 @@ class HotTubServer(object):
         # freeze control checks
         self.filter_status = 1 if (filter_settings['start'] <= seconds and
               filter_settings['end'] >= seconds) else 0
-        self.freeze_status = 1 if self.status.tempAir < 37.0 else 0
+        self.freeze_status = 1 if self.status.tempAir < self.config.freezeCtlTemp 
+	self.freeze_status = 0 if self.status.tempAir > self.config.freezeCtlTemp + 0.5 
         if self.freeze_status == 1 and self.status.pump1 == 0:
             self.controller.pump1_low()
         elif self.filter_status == 1 and self.status.pump1 == 0:
             self.controller.pump1_low()
         elif self.status.pump1 == 0 and (not self.filter_status == 1) and (not self.freeze_status == 1):
             self.controller.pump1_off()
-        if self.status.tempIn < 37.0 and self.freeze_status == 1 and \
-            (datetime.datetime.now() - self.last_alert).total_seconds() > 3600:
-            print "WARNING: WATER TEMPERATURE ALERT. POSSIBLE POWER OUTAGE."
-            try:
-                with open('/home/pi/hot-tub-controller/alerts.json') as fd:
-                    alerts = json.loads(fd.read())
-                if alerts['number']:
-                    out = subprocess.check_output(["curl",
-                        "http://textbelt.com/text",
-                        "-d",
-                        "number={}".format(alerts['number']),
-                        "-d",
-                        "message=WARNING: hot tub freeze alarm: {:.1f}F".format(
-                            self.status.tempIn)])
-                print 'SMS response: {}'.format(out)
-                self.last_alert = datetime.datetime.now()
-            except Exception as err: print "Error sending SMS alert: {}".format(err)
+        #if self.status.tempIn < 37.0 and self.freeze_status == 1 and \
+        #    (datetime.datetime.now() - self.last_alert).total_seconds() > 3600:
+        #    print "WARNING: WATER TEMPERATURE ALERT. POSSIBLE POWER OUTAGE."
+        #    try:
+        #        with open('/home/pi/hot-tub-controller/alerts.json') as fd:
+        #            alerts = json.loads(fd.read())
+        #        if alerts['number']:
+        #            out = subprocess.check_output(["curl",
+        #                "http://textbelt.com/text",
+        #                "-d",
+        #                "number={}".format(alerts['number']),
+        #                "-d",
+        #                "message=WARNING: hot tub freeze alarm: {:.1f}F".format(
+        #                    self.status.tempIn)])
+        #        print 'SMS response: {}'.format(out)
+        #        self.last_alert = datetime.datetime.now()
+        #    except Exception as err: print "Error sending SMS alert: {}".format(err)
         # check for automatic tub turn off 
         if self.status.pump1 != 0 and (self.status.tempOut - self.status.tempIn) < 1.0 and \
             (self.status.heater == 0 and self.status.tempIn > self.config.poolModeTemp or self.status.heater == 1 and self.status.tempIn > self.config.spaModeTemp):
