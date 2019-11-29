@@ -1,9 +1,9 @@
 {
     "poolModeTemp": 99, 
     "spaModeTemp": 104, 
-    "freezeCtrlTemp": 38, 
     "two_speed_pump": true, 
     "poolModeLabel": "Mama Bear", 
     "spaModeLabel": "Papa Bear", 
-    "second_pump": false
+    "second_pump": false, 
+    "freezeCtrlTemp": 36
 }
