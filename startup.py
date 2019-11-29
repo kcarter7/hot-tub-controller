@@ -55,8 +55,8 @@ class HotTubServer(object):
         # freeze control checks
         self.filter_status = 1 if (filter_settings['start'] <= seconds and
               filter_settings['end'] >= seconds) else 0
-        self.freeze_status = 1 if self.status.tempAir < self.config.freezeCtlTemp 
-	self.freeze_status = 0 if self.status.tempAir > self.config.freezeCtlTemp + 0.5 
+        self.freeze_status = 1 if self.status.tempAir < self.config.freezeCtrlTemp 
+	self.freeze_status = 0 if self.status.tempAir > self.config.freezeCtrlTemp + 0.5 
         if self.freeze_status == 1 and self.status.pump1 == 0:
             self.controller.pump1_low()
         elif self.filter_status == 1 and self.status.pump1 == 0:
